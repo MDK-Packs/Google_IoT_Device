@@ -19,62 +19,6 @@
 
 #define NTP_SERVER  "time.google.com"
 
-static int gethostaddress (char *name, NET_ADDR4 *addr)
-{
-  HOSTENT *host;
-  int rc;
-
-  host = gethostbyname(name, NULL);
-  if ((host != NULL) && (host->h_addrtype == AF_INET))
-  {
-    addr->addr_type = NET_ADDR_IP4;
-    *((uint32_t *)addr->addr) = *((uint32_t *)host->h_addr_list[0]);
-    rc = 0;
-  }
-  else
-    rc = -1;
-
-  return rc;
-}
-
-static unsigned int Timestamp;
-static volatile int TimeUpdated;
-
-static void NTP_callback (uint32_t seconds, uint32_t seconds_fraction)
-{
-  if (seconds != 0U)
-  {
-    Timestamp = seconds;
-    TimeUpdated =  1;
-  } else {
-    TimeUpdated = -1;
-  }
-}
-
-static unsigned int NTP_GetTime (void)
-{
-  NET_ADDR4 ntp_server;
-
-  Timestamp = 0;
-
-  if (gethostaddress(NTP_SERVER, &ntp_server) == 0)
-  {
-    TimeUpdated = 0;
-    if (netSNTPc_GetTime((NET_ADDR *)&ntp_server, NTP_callback) == netOK)
-    {
-      while (TimeUpdated == 0);
-      if (TimeUpdated != 1)
-        printf("NTP server not responding\n");
-    }
-    else
-      printf("NTP not ready\n");
-  }
-  else
-    printf("NTP server name not resolved\n");
-
-  return Timestamp;
-}
-
 void messageArrived(MessageData* data)
 {
   printf("Configuration Message arrived: %.*s\n",
@@ -107,7 +51,7 @@ void MQTT_Demo (void)
     printf("Return code from start tasks is %d\n", rc);
 #endif
 
-  timestamp = NTP_GetTime();
+  netSNTPc_GetTimeX(NTP_SERVER, &timestamp, NULL);
 
   jwt = google_iot_jwt(PrivateKey, PROJECT_ID, timestamp, timestamp + JWT_EXPIRATION);
   if (jwt == NULL)
