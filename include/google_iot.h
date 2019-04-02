@@ -30,7 +30,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "mbedTLS.h"
+#include "mbedtls/base64.h"
+#include "mbedtls/sha256.h"
+#include "mbedtls/ecdsa.h"
+#include "mbedtls/rsa.h"
+#include "mbedtls/pk.h"
+#include "mbedtls/entropy.h"
+#include "mbedtls/ctr_drbg.h"
 
 #define GOOGLE_IOT_CLIENT_ID(project_id, cloud_region, registry_id, device_id) \
   "projects/"project_id"/locations/"cloud_region"/registries/"registry_id"/devices/"device_id
