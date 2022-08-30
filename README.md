@@ -5,6 +5,7 @@ This repo contains the source for a CMSIS-Pack that enables Arm Cortex-M microco
 Working with this repository requires the following applications and packs to be installed on your PC:
 - bash compatible shell (under Windows, use for example [git bash](https://gitforwindows.org/))
 - ZIP archive creation utility (e.g. [7-Zip](https://www.7-zip.org/))
+- CMSIS Pack installed in CMSIS_PACK_ROOT (for PackChk utility)
 
 ## Instructions
 1. Open a bash compatible shell
